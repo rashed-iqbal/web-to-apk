@@ -13,7 +13,6 @@ import android.os.Environment
 import android.webkit.CookieManager
 import android.webkit.URLUtil
 import android.webkit.WebView
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -22,7 +21,7 @@ import androidx.core.content.ContextCompat
 class WebToApk (private val context: Context){
 
     @Suppress("DEPRECATION")
-    public fun isOnline(): Boolean {
+    fun isOnline(): Boolean {
         var result = false
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -49,7 +48,7 @@ class WebToApk (private val context: Context){
         return result
     }
 
-    public fun exitDialog(){
+    fun exitDialog(){
         val dialogBuilder = AlertDialog.Builder(context)
         dialogBuilder
             .setMessage("Are you sure you want to exit?")
@@ -64,13 +63,13 @@ class WebToApk (private val context: Context){
         alertDialog.show()
     }
 
-    public fun checkPermission(permission: String,requestCode:Int){
+    fun checkPermission(permission: String,requestCode:Int){
         if(ContextCompat.checkSelfPermission(context , permission) == PackageManager.PERMISSION_DENIED){
             ActivityCompat.requestPermissions(context as Activity, arrayOf(permission),requestCode)
         }
     }
 
-    public fun enableDownload(webView:WebView){
+    fun enableDownload(webView:WebView){
         webView.setDownloadListener { url, userAgent, contentDisposition, mimetype, _ ->
 
             val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(url))
@@ -89,27 +88,6 @@ class WebToApk (private val context: Context){
         }
     }
 
-    public fun enableProgress(startProgress:ProgressBar,progressBar:ProgressBar,newProgress:Int,isStart:Boolean) {
-        progressBar.progress = newProgress
-        startProgress.progress = newProgress
-
-        if(isStart){
-            if(newProgress <100 && startProgress.visibility == ProgressBar.GONE){
-                startProgress.visibility = ProgressBar.VISIBLE
-            }
-            if(newProgress == 100){
-                startProgress.visibility = ProgressBar.GONE
-            }
-
-        } else {
-            if(newProgress <100 && progressBar.visibility == ProgressBar.GONE){
-                progressBar.visibility = ProgressBar.VISIBLE
-            }
-            if(newProgress == 100){
-                progressBar.visibility = ProgressBar.GONE
-            }
-        }
-    }
 
 
 }
