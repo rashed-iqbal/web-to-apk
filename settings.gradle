@@ -1,0 +1,3 @@
+rootProject.name = "WebToApk"
+include ':app'
+include ':webtoapk'
