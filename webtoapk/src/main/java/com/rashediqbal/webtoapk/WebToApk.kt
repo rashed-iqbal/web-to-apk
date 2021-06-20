@@ -101,8 +101,7 @@ class WebToApk (private val context: Context){
                 startProgress.visibility = ProgressBar.GONE
             }
 
-        }
-        if(!isStart){
+        } else {
             if(newProgress <100 && progressBar.visibility == ProgressBar.GONE){
                 progressBar.visibility = ProgressBar.VISIBLE
             }
