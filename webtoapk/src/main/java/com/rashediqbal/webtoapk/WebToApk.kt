@@ -89,7 +89,7 @@ class WebToApk (private val context: Context){
         }
     }
 
-    public fun enableProgress(startProgress:ProgressBar,progressBar:ProgressBar,newProgress:Int,isStart:Boolean):Boolean {
+    public fun enableProgress(startProgress:ProgressBar,progressBar:ProgressBar,newProgress:Int,isStart:Boolean) {
         progressBar.progress = newProgress
         startProgress.progress = newProgress
 
@@ -110,7 +110,6 @@ class WebToApk (private val context: Context){
                 progressBar.visibility = ProgressBar.GONE
             }
         }
-        return false
     }
 
 
