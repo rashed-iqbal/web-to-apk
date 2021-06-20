@@ -1,9 +1,11 @@
 package com.rashediqbal.webtoapk
 
+import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import androidx.appcompat.app.AlertDialog
 
 class WebToApk (private val context: Context){
 
@@ -33,6 +35,21 @@ class WebToApk (private val context: Context){
             }
         }
         return result
+    }
+
+    public fun exitDialog(){
+        val dialogBuilder = AlertDialog.Builder(context)
+        dialogBuilder
+            .setMessage("Are you sure you want to exit?")
+            .setCancelable(false)
+            .setPositiveButton("Yes"){ _, _ ->
+                (context as Activity).finish()
+            }
+            .setNegativeButton("No"){ dialogInterface, _ ->
+                dialogInterface.cancel()
+            }
+        val alertDialog = dialogBuilder.create()
+        alertDialog.show()
     }
 
 }
