@@ -10,34 +10,49 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.webkit.CookieManager
-import android.webkit.URLUtil
-import android.webkit.WebView
+import android.webkit.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-class WebToApk (private val context: Context){
+class WebToApk (private val webView: WebView){
 
-    fun exitDialog(){
-        val dialogBuilder = AlertDialog.Builder(context)
-        dialogBuilder
-            .setMessage("Are you sure you want to exit?")
-            .setCancelable(false)
-            .setPositiveButton("Yes"){ _, _ ->
-                (context as Activity).finish()
-            }
-            .setNegativeButton("No"){ dialogInterface, _ ->
-                dialogInterface.cancel()
-            }
-        val alertDialog = dialogBuilder.create()
-        alertDialog.show()
+    init {
+        webView.settings.javaScriptEnabled = true
+        webView.webViewClient = WebViewClient()
+
+        val webSettings: WebSettings = webView.settings
+        webSettings.allowFileAccess = true
+        webSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+        webSettings.domStorageEnabled = true
+        webSettings.useWideViewPort = true
     }
 
+    fun exitDialog(){
+        if(webView.canGoBack()){
+            webView.goBack()
+        } else {
+            val dialogBuilder = AlertDialog.Builder(webView.context)
+            dialogBuilder
+                .setMessage("Are you sure you want to exit?")
+                .setCancelable(false)
+                .setPositiveButton("Yes"){ _, _ ->
+                    (webView.context as Activity).finish()
+                }
+                .setNegativeButton("No"){ dialogInterface, _ ->
+                    dialogInterface.cancel()
+                }
+            val alertDialog = dialogBuilder.create()
+            alertDialog.show()
+        }
+    }
+
+
+
     fun checkPermission(permission: String,requestCode:Int){
-        if(ContextCompat.checkSelfPermission(context , permission) == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(context as Activity, arrayOf(permission),requestCode)
+        if(ContextCompat.checkSelfPermission(webView.context , permission) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(webView.context as Activity, arrayOf(permission),requestCode)
         }
     }
 
@@ -53,9 +68,9 @@ class WebToApk (private val context: Context){
             request.setTitle(URLUtil.guessFileName(url,contentDisposition,mimetype))
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,URLUtil.guessFileName(url,contentDisposition,mimetype))
-            val downloadManager:DownloadManager = context.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            val downloadManager:DownloadManager = webView.context.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
             downloadManager.enqueue(request)
-            Toast.makeText(context,"Downloading File",Toast.LENGTH_SHORT).show()
+            Toast.makeText(webView.context,"Downloading File",Toast.LENGTH_SHORT).show()
 
         }
     }
