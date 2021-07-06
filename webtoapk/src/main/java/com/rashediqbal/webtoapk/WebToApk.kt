@@ -11,14 +11,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.webkit.*
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-class WebToApk (private val webView: WebView){
+class WebToApk(private val webView: WebView) {
 
-    init {
+     init{
         webView.settings.javaScriptEnabled = true
         webView.webViewClient = WebViewClient()
 
@@ -73,6 +74,59 @@ class WebToApk (private val webView: WebView){
             Toast.makeText(webView.context,"Downloading File",Toast.LENGTH_SHORT).show()
 
         }
+    }
+
+
+
+    fun progressBar(progressBar:ProgressBar,startProgress:ProgressBar? = null){
+        // Progress Bar
+        var isStart = true
+
+        if (startProgress == null){
+
+            webView.webChromeClient = object: WebChromeClient(){
+                override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                    if(newProgress <100 && progressBar.visibility == ProgressBar.GONE){
+                        progressBar.visibility = ProgressBar.VISIBLE
+                    }
+                    if(newProgress == 100){
+                        progressBar.visibility = ProgressBar.GONE
+                    }
+                }
+
+            }
+
+        } else {
+            webView.webChromeClient = object: WebChromeClient(){
+                override fun onProgressChanged(view: WebView?, newProgress: Int) {
+
+                    progressBar.progress = newProgress
+                    startProgress!!.progress = newProgress
+
+                    if(isStart){
+                        if(newProgress < 100 && startProgress.visibility == ProgressBar.GONE){
+                            startProgress.visibility = ProgressBar.VISIBLE
+                        }
+                        if(newProgress == 100 && startProgress.visibility == ProgressBar.VISIBLE){
+                            startProgress.visibility = ProgressBar.GONE
+                            isStart = false
+                        }
+
+                    } else {
+                        if(newProgress <100 && progressBar.visibility == ProgressBar.GONE){
+                            progressBar.visibility = ProgressBar.VISIBLE
+                        }
+                        if(newProgress == 100){
+                            progressBar.visibility = ProgressBar.GONE
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+
     }
 
 
