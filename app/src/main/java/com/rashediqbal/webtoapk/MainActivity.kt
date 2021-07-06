@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         val progressBar:ProgressBar = findViewById(R.id.progress_bar)
         val startProgress:ProgressBar = findViewById(R.id.start_progress)
 
-        webToApk.progressBar(progressBar)
+        webToApk.progressBar(progressBar,startProgress)
 
     }
 

@@ -3,24 +3,26 @@ package com.rashediqbal.webtoapk
 import android.app.Activity
 import android.app.DownloadManager
 import android.content.Context
+import android.content.Context.CONNECTIVITY_SERVICE
 import android.content.Context.DOWNLOAD_SERVICE
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.net.Uri
+import android.net.*
 import android.os.Build
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.webkit.*
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 class WebToApk(private val webView: WebView) {
 
      init{
-        webView.settings.javaScriptEnabled = true
+         true.also { webView.settings.javaScriptEnabled = it }
         webView.webViewClient = WebViewClient()
 
         val webSettings: WebSettings = webView.settings
@@ -128,6 +130,44 @@ class WebToApk(private val webView: WebView) {
             }
         }
 
+
+    }
+
+    fun pullToRefresh(swipeRefresh:SwipeRefreshLayout){
+        swipeRefresh.setOnRefreshListener {
+            Handler(Looper.getMainLooper()).postDelayed({
+                swipeRefresh.isRefreshing = false
+                webView.reload()
+            },500)
+        }
+    }
+
+
+    fun checkInternet(isInternet:(value:Boolean)->Unit){
+
+        val connectivityManager = webView.context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val request = NetworkRequest.Builder().build()
+        connectivityManager.registerNetworkCallback(request,object : ConnectivityManager.NetworkCallback(){
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+                isInternet(true)
+            }
+
+            override fun onLosing(network: Network, maxMsToLive: Int) {
+                super.onLosing(network, maxMsToLive)
+                isInternet(false)
+            }
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                isInternet(false)
+            }
+
+            override fun onUnavailable() {
+                super.onUnavailable()
+                isInternet(false)
+            }
+        })
 
     }
 
