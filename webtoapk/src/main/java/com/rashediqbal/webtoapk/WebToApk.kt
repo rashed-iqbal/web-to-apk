@@ -146,12 +146,7 @@ class WebToApk(private val webView: WebView) {
     fun checkInternet(isInternet:(value:Boolean)->Unit){
 
         val connectivityManager = webView.context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val request = NetworkRequest.Builder()
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
-            .build()
+        val request = NetworkRequest.Builder().build()
         connectivityManager.registerNetworkCallback(request,object : ConnectivityManager.NetworkCallback(){
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
