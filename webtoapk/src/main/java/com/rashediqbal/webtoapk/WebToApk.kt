@@ -150,24 +150,26 @@ class WebToApk(private val webView: WebView) {
         connectivityManager.registerNetworkCallback(request,object : ConnectivityManager.NetworkCallback(){
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
-                isInternet(true)
+                return isInternet(true)
             }
 
             override fun onLosing(network: Network, maxMsToLive: Int) {
                 super.onLosing(network, maxMsToLive)
-                isInternet(false)
+                return isInternet(false)
             }
 
             override fun onLost(network: Network) {
                 super.onLost(network)
-                isInternet(false)
+                return isInternet(false)
             }
 
             override fun onUnavailable() {
                 super.onUnavailable()
-                isInternet(false)
+                return isInternet(false)
             }
         })
+
+        return isInternet(false)
 
     }
 
