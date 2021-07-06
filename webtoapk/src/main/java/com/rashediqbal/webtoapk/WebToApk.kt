@@ -86,12 +86,14 @@ class WebToApk(private val webView: WebView) {
 
             webView.webChromeClient = object: WebChromeClient(){
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                    progressBar.progress = newProgress
                     if(newProgress <100 && progressBar.visibility == ProgressBar.GONE){
                         progressBar.visibility = ProgressBar.VISIBLE
                     }
                     if(newProgress == 100){
                         progressBar.visibility = ProgressBar.GONE
                     }
+
                 }
 
             }
